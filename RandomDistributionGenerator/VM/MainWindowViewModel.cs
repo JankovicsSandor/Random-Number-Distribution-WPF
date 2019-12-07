@@ -6,8 +6,11 @@ using RandomDistributionGenerator.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -16,9 +19,24 @@ namespace RandomDistributionGenerator.VM
     class MainWindowViewModel : ViewModelBase
     {
         public ObservableCollection<GeneratedNumberStat> Generates { get; private set; }
-
         private string min;
         private string max;
+        private int generateStatus;
+        private bool showProgressBar;
+
+        public bool ShowProgressBar
+        {
+            get { return showProgressBar; }
+            set { Set(ref showProgressBar, value); }
+        }
+
+
+        public int GenerateStatus
+        {
+            get { return generateStatus; }
+            set { Set(ref generateStatus, value); }
+        }
+
 
         public string Max
         {
@@ -53,7 +71,9 @@ namespace RandomDistributionGenerator.VM
 
         public MainWindowViewModel()
         {
+            ShowProgressBar = false;
             logic.NumberGenerated += Logic_NumberGenerated;
+            logic.ProgressbarUpdate += Logic_ProgressbarUpdate;
             Generates = new ObservableCollection<GeneratedNumberStat>();
             GenerateCommand = new RelayCommand(() =>
             {
@@ -69,13 +89,23 @@ namespace RandomDistributionGenerator.VM
                         NumberOfChoice = 0
                     });
                 }
-                logic.GenerateNumbers(times, minInt, maxInt);
+                Task.Run(() =>
+                {
+                    logic.GenerateNumbers(times, minInt, maxInt);
+                });
             });
 
         }
 
+        private void Logic_ProgressbarUpdate(object sender, int e)
+        {
+            Debug.WriteLine("UPDATE PROGRESS: " + e.ToString());
+            GenerateStatus = e;
+        }
+
         private void Logic_NumberGenerated(object sender, int number)
         {
+            Debug.WriteLine("UPDATE NUMBER: " + number.ToString());
             GeneratedNumberStat stat = Generates.FirstOrDefault(e => e.Number == number);
             stat.NumberOfChoice++;
         }
