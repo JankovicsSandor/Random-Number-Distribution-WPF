@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CommonServiceLocator;
+using GalaSoft.MvvmLight.Ioc;
+using RandomDistributionGenerator.Logic;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +16,10 @@ namespace RandomDistributionGenerator
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+            SimpleIoc.Default.Register<IGenerateLogic, GenerateLogic>();
+        }
     }
 }

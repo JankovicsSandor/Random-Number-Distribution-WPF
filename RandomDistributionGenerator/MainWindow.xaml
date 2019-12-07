@@ -4,15 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RandomDistributionGenerator"
+        xmlns:localVM="clr-namespace:RandomDistributionGenerator.VM"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <TextBox HorizontalAlignment="Left" Margin="151,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Margin="337,55,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Margin="536,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+    <Window.Resources>
+        <localVM:MainWindowViewModel x:Key="VM"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource VM}">
+        <TextBox HorizontalAlignment="Left" Margin="151,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="{Binding Path=Times}"/>
+        <TextBox HorizontalAlignment="Left" Margin="337,55,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="{Binding Path=Min}"/>
+        <TextBox HorizontalAlignment="Left" Margin="536,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="{Binding Path=Max}"/>
         <Label Content="Number or iteration:" HorizontalAlignment="Left" Margin="18,50,0,0" VerticalAlignment="Top"/>
         <Label  Content="Min:" HorizontalAlignment="Left" Margin="299,51,0,0" VerticalAlignment="Top"/>
         <Label  Content="Max:" HorizontalAlignment="Left" Margin="489,51,0,0" VerticalAlignment="Top"/>
-        <Button Content="Generate" HorizontalAlignment="Left" Margin="696,47,0,0" VerticalAlignment="Top" Height="31" Width="62"/>
+        <Button Content="Generate" HorizontalAlignment="Left" Margin="696,47,0,0" VerticalAlignment="Top" Height="31" Width="62" Command="{Binding Path=GenerateCommand}"/>
+        <ListBox x:Name="listBox" Margin="10,103,53,33" ItemsSource="{Binding Path= Generates}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding Path=Number}"/>
+                        <Label Content="{Binding Path=NumberOfChoice}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
